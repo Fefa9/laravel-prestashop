@@ -55,10 +55,29 @@ class PrestaShopController extends Controller
         }
     }
 
+    public function getCustomer($id)
+    {
+        try {
+            Log::info("Fetching customer with ID: {$id}");
+            $opt = [
+                'resource' => 'customers',
+                'id' => $id
+            ];
+            $xml = $this->prestashop->get($opt);
+            $customer = json_decode(json_encode((array)simplexml_load_string($xml)), true);
+            Log::info("Customer fetched successfully: ", $customer);
+            return response()->json($customer);
+        } catch (\Exception $e) {
+            Log::error("Error fetching customer with ID {$id}: {$e->getMessage()}");
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+
     public function testWebservice()
     {
         try {
-            $webservice = new \PrestaShopWebservice\PrestaShopWebservice(
+            $webservice = new \PrestaShopWebservice(
                 env('PRESTASHOP_API_URL'),
                 env('PRESTASHOP_API_KEY')
             );

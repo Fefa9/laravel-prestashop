@@ -14,6 +14,9 @@ Route::get('/api/products/{id}', [PrestaShopController::class, 'getProduct']);
 // Route API pour obtenir tous les produits
 Route::get('/api/products', [PrestaShopController::class, 'getAllProducts']);
 
+// route api clients
+Route::get('api/customers/{id}', [PrestaShopController::class, 'getCustomer']);
+
 // route de test
 Route::get('/test-webservice', function () {
     try {
