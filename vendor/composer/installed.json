@@ -1,0 +1,54 @@
+{
+    "packages": [
+        {
+            "name": "prestashop/prestashop-webservice-lib",
+            "version": "dev-master",
+            "version_normalized": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PrestaShop/PrestaShop-webservice-lib.git",
+                "reference": "e1d41ddc24cc3a5cfaf258e647da02eb05fb274e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PrestaShop/PrestaShop-webservice-lib/zipball/e1d41ddc24cc3a5cfaf258e647da02eb05fb274e",
+                "reference": "e1d41ddc24cc3a5cfaf258e647da02eb05fb274e",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-libxml": "*",
+                "ext-simplexml": "*",
+                "php": ">= 5.3.0"
+            },
+            "time": "2024-11-18T12:34:09+00:00",
+            "default-branch": true,
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "classmap": [
+                    "PSWebServiceLibrary.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "PrestaShop SA",
+                    "email": "contact@prestashop.com"
+                }
+            ],
+            "description": "PrestaShop Webservice access library",
+            "support": {
+                "source": "https://github.com/PrestaShop/PrestaShop-webservice-lib/tree/master"
+            },
+            "install-path": "../prestashop/prestashop-webservice-lib"
+        }
+    ],
+    "dev": true,
+    "dev-package-names": [
+        "prestashop/prestashop-webservice-lib"
+    ]
+}

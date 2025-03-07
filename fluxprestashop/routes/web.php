@@ -13,3 +13,16 @@ Route::get('/api/products/{id}', [PrestaShopController::class, 'getProduct']);
 
 // Route API pour obtenir tous les produits
 Route::get('/api/products', [PrestaShopController::class, 'getAllProducts']);
+
+// route de test
+Route::get('/test-webservice', function () {
+    try {
+        $webservice = new \PrestaShopWebservice(
+            env('PRESTASHOP_API_URL'),
+            env('PRESTASHOP_API_KEY')
+        );
+        return response()->json(['message' => 'Webservice initialized successfully']);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+});

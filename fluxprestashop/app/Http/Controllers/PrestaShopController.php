@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Protechstudio\PrestashopWebService\PrestashopWebService;
 use Illuminate\Support\Facades\Log;
+use PrestaShopWebservice\PrestaShopWebservice;
+
 
 class PrestaShopController extends Controller
 {
@@ -13,7 +14,7 @@ class PrestaShopController extends Controller
     public function __construct()
     {
         Log::info('Initializing PrestaShop Webservice');
-        $this->prestashop = new PrestashopWebService(
+        $this->prestashop = new \PrestaShopWebservice(
             env('PRESTASHOP_API_URL'),
             env('PRESTASHOP_API_KEY')
         );
@@ -24,7 +25,12 @@ class PrestaShopController extends Controller
     {
         try {
             Log::info("Fetching product with ID: {$id}");
-            $product = $this->prestashop->get(['resource' => 'products', 'id' => $id]);
+            $opt = [
+                'resource' => 'products',
+                'id' => $id
+            ];
+            $xml = $this->prestashop->get($opt);
+            $product = json_decode(json_encode((array)simplexml_load_string($xml)), true);
             Log::info("Product fetched successfully: ", $product);
             return response()->json($product);
         } catch (\Exception $e) {
@@ -38,7 +44,9 @@ class PrestaShopController extends Controller
     {
         try {
             Log::info("Fetching all products");
-            $products = $this->prestashop->get(['resource' => 'products']);
+            $opt = ['resource' => 'products'];
+            $xml = $this->prestashop->get($opt);
+            $products = json_decode(json_encode((array)simplexml_load_string($xml)), true);
             Log::info("All products fetched successfully");
             return response()->json($products);
         } catch (\Exception $e) {
@@ -46,6 +54,20 @@ class PrestaShopController extends Controller
             return response()->json(['error' => 'Failed to fetch products', 'message' => $e->getMessage()], 500);
         }
     }
+
+    public function testWebservice()
+    {
+        try {
+            $webservice = new \PrestaShopWebservice\PrestaShopWebservice(
+                env('PRESTASHOP_API_URL'),
+                env('PRESTASHOP_API_KEY')
+            );
+            return response()->json(['message' => 'Webservice initialized successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
 }
 
 
