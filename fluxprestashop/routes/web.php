@@ -17,6 +17,10 @@ Route::get('/api/products', [PrestaShopController::class, 'getAllProducts']);
 // route api clients
 Route::get('api/customers/{id}', [PrestaShopController::class, 'getCustomer']);
 
+// update prix
+Route::post('/products/{id}/updatePrice', 'PrestaShopController@updateProductPrice')->name('updateProductPrice');
+
+
 // route de test
 Route::get('/test-webservice', function () {
     try {
@@ -28,4 +32,5 @@ Route::get('/test-webservice', function () {
     } catch (\Exception $e) {
         return response()->json(['error' => $e->getMessage()], 500);
     }
+    
 });

@@ -3,5 +3,8 @@
     "prefer-stable": true,
     "require-dev": {
         "prestashop/prestashop-webservice-lib": "dev-master"
+    },
+    "require": {
+        "guzzlehttp/guzzle": "^7.9"
     }
 }
