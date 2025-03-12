@@ -1,4 +1,10 @@
-<html><head><title>CRUD Tutorial - Customer's list</title></head><body>
+<html>
+<head>
+        <title>Liste des clients</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
 <?php
 /*
 * 2007-2020 PrestaShop SA and Contributors
@@ -31,7 +37,8 @@
 define('DEBUG', true);											// Debug mode
 define('PS_SHOP_PATH', 'http://localhost:8080/');		// Root path of your PrestaShop store
 define('PS_WS_AUTH_KEY', '8IFRIW5XG2AE4YV64QM67XMFA13F4PAT');	// Auth key (Get it in your Back Office)
-require_once('../PSWebServiceLibrary.php');
+require_once(__DIR__ . '/../vendor/prestashop/prestashop-webservice-lib/PSWebServiceLibrary.php');
+('../PSWebServiceLibrary.php');
 
 // Here we make the WebService Call
 try
@@ -56,20 +63,28 @@ catch (PrestaShopWebserviceException $e)
 	else echo 'Other error';
 }
 
-// We set the Title
-echo "<h1>Customer's List</h1>";
+// rajout pour Bootstrap
+echo "<div class='container'>";
 
-echo '<table border="5">';
+// We set the Title
+echo "<h1 class='mt-5'>Liste des clients</h1>";
+
+echo '<table class="table table-bordered mt-3">';
+echo '<thead class="thead-dark"><tr><th>ID</th><th>First Name</th><th>Last Name</th></tr></thead>';
+echo '<tbody>';
 // if $resources is set we can lists element in it otherwise do nothing cause there's an error
 if (isset($resources))
 {
-		echo '<tr><th>Id</th></tr>';
+		//echo '<tr><th>Id</th></tr>';
 		foreach ($resources as $resource)
 		{
-			// Iterates on the found IDs
-			echo '<tr><td>'.$resource->attributes().'</td></tr>';
-		}
+            $id = $resource->attributes()->id;
+            $firstName = $resource->firstname;
+            $lastName = $resource->lastname;
+            echo '<tr><td>'.$id.'</td><td>'.$firstName.'</td><td>'.$lastName.'</td></tr>';
+        }
 }
-echo '</table>';
+echo '</tbody></table>';
+echo "</div>";
 ?>
 </body></html>
