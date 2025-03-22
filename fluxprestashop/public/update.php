@@ -28,7 +28,7 @@
 */
 
 // Here we define constants /!\ You need to replace this parameters
-define('DEBUG', true);
+define('DEBUG', false);
 define('PS_SHOP_PATH', 'http://localhost:8080/');
 define('PS_WS_AUTH_KEY', '8IFRIW5XG2AE4YV64QM67XMFA13F4PAT');
 require_once(__DIR__ . '/../vendor/prestashop/prestashop-webservice-lib/PSWebServiceLibrary.php');

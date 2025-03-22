@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+//use Illuminate\Support\Facades\Log;
 use PrestaShopWebservice\PrestaShopWebservice;
 
+define('DEBUG', false);
 
 class PrestaShopController extends Controller
 {
@@ -13,105 +14,15 @@ class PrestaShopController extends Controller
 
     public function __construct()
     {
-        Log::info('Initializing PrestaShop Webservice');
+        //Log::info('Initializing PrestaShop Webservice');
         $this->prestashop = new \PrestaShopWebservice(
             env('PRESTASHOP_API_URL'),
-            env('PRESTASHOP_API_KEY')
+            env('PRESTASHOP_API_KEY'),
+            false // Désactiver le debug
         );
     }
 
-    // Méthode pour obtenir un produit par ID
-    public function getProduct($id)
-    {
-        try {
-            Log::info("Fetching product with ID: {$id}");
-
-            // Options pour la requête
-            $opt = [
-                'resource' => 'products',
-                'id' => $id,
-            ];
-
-            // Effectuer la requête et obtenir la réponse en XML
-            $xmlResponse = $this->prestashop->get($opt);
-
-            // Vérifier si la réponse XML est valide
-            if ($xmlResponse === false) {
-                throw new \Exception("Invalid XML response");
-            }
-
-            // Enregistrer la réponse brute pour le débogage
-            Log::info("Raw XML response: {$xmlResponse}");
-
-            // Charger et parser la réponse XML
-            $productXml = simplexml_load_string($xmlResponse);
-
-            // Vérifier si le chargement du XML a réussi
-            if ($productXml === false) {
-                throw new \Exception("Failed to parse XML");
-            }
-
-            // Convertir l'objet SimpleXMLElement en tableau associatif
-            $productArray = json_decode(json_encode((array)$productXml), true);
-
-            // Ajouter une instruction de débogage pour examiner la structure du tableau
-            Log::info("Product array structure: ", $productArray);
-
-            // Vérifier et accéder aux données du produit
-            $product = $productArray['product'] ?? [];
-
-            // Accéder aux champs `name` et `description`
-            $productName = $product['name'] ?? 'Nom non disponible';
-            $productDescription = $product['description'] ?? 'Description non disponible';
-            $productPrice = $product['price'] ?? 'Prix non disponible';
-
-            // Passer les données du produit à la vue
-            return view('products.show', compact('productName', 'productDescription', 'productPrice'));
-        } catch (\Exception $e) {
-            Log::error("Error fetching product with ID {$id}: {$e->getMessage()}");
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
-    }
-
-
-    // Méthode pour obtenir tous les produits
-    public function getAllProducts()
-    {
-        try {
-            Log::info("Fetching all products");
-            $opt = ['resource' => 'products'];
-            $xml = $this->prestashop->get($opt);
-            $products = json_decode(json_encode((array)simplexml_load_string($xml)), true);
-            Log::info("All products fetched successfully");
-            return response()->json($products);
-        } catch (\Exception $e) {
-            Log::error("Error fetching products: {$e->getMessage()}");
-            return response()->json(['error' => 'Failed to fetch products', 'message' => $e->getMessage()], 500);
-        }
-    }
-
-    public function getCustomer($id)
-    {
-        try {
-            Log::info("Fetching customer with ID: {$id}");
-            $opt = [
-                'resource' => 'customers',
-                'id' => $id,
-                'headers' => [
-                    'output_format' => 'JSON'                ]
-            ];
-            $xml = $this->prestashop->get($opt);
-            $customer = json_decode(json_encode((array)simplexml_load_string($xml)), true);
-            Log::info("Customer fetched successfully: ", $customer);
-            return response()->json($customer);
-            return view('customerById', ['customer' => $customer]);
-        } catch (\Exception $e) {
-            Log::error("Error fetching customer with ID {$id}: {$e->getMessage()}");
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
-    }
-
-
+    
     public function testWebservice()
     {
         try {
@@ -125,39 +36,113 @@ class PrestaShopController extends Controller
         }
     }
 
-    public function updateProductPrice(Request $request, $id)
+    
+
+    public function listCustomers()
+    {
+        try {
+            $webservice = new \PrestaShopWebservice(
+                env('PRESTASHOP_API_URL'),
+                env('PRESTASHOP_API_KEY')
+            );
+
+            $opt['resource'] = 'customers';
+            $xml = $webservice->get($opt);
+            $resources = $xml->customers->children();
+
+            $customers = [];
+            foreach ($resources as $resource) {
+                $customers[] = [
+                    'id' => (string)$resource->attributes()->id,
+                    'firstname' => (string)$resource->firstname,
+                    'lastname' => (string)$resource->lastname,
+                ];
+            }
+
+            return view('customers.list', ['customers' => $customers]);
+        } catch (\PrestaShopWebserviceException $e) {
+            return view('customers.list', ['error' => $e->getMessage()]);
+        }
+    }
+
+    public function getCustomerDetails($id)
 {
     try {
-        Log::info("Updating price for product with ID: {$id}");
+        // Initialiser le webservice PrestaShop
+        $webservice = new \PrestaShopWebservice(
+            env('PRESTASHOP_API_URL'),
+            env('PRESTASHOP_API_KEY'),
+            false // Désactiver le debug
+        );
 
-        // Options pour la requête
-        $opt = [
-            'resource' => 'products',
-            'id' => $id,
+        // Options pour récupérer un client spécifique
+        $opt['resource'] = 'customers';
+        $opt['id'] = $id; // ID du client à récupérer
+
+        // Appeler le webservice
+        $xml = $webservice->get($opt);
+
+        // Récupérer les données du client
+        $customer = $xml->customer;
+
+        // Convertir les données en tableau
+        $customerDetails = [
+            'id' => (string)$customer->id,
+            'firstname' => (string)$customer->firstname,
+            'lastname' => (string)$customer->lastname,
+            'email' => (string)$customer->email,
+            'date_add' => (string)$customer->date_add,
+            'date_upd' => (string)$customer->date_upd,
+            // Ajoutez d'autres champs si nécessaires
         ];
 
-        // Effectuer la requête et obtenir la réponse en XML
-        $xmlResponse = $this->prestashop->get($opt);
+        // Retourner la vue avec les détails du client
+        return view('customers.details', ['customer' => $customerDetails]);
+    } catch (\PrestaShopWebserviceException $e) {
+        // Gestion des erreurs
+        return view('customers.details', ['error' => $e->getMessage()]);
+    }
+}
 
-        // Charger la réponse XML
-        $productXml = simplexml_load_string($xmlResponse);
 
-        // Modifier le prix
-        if (isset($productXml->product->price)) {
-            $productXml->product->price = (float)$request->input('price');
+public function listProducts()
+{
+    try {
+        // Initialiser le webservice PrestaShop
+        $webservice = new \PrestaShopWebservice(
+            env('PRESTASHOP_API_URL'),
+            env('PRESTASHOP_API_KEY'),
+            false // Désactiver le debug
+        );
+
+        // Options pour récupérer les ressources "produits"
+        $opt['resource'] = 'products';
+
+        // Appel au webservice
+        $xml = $webservice->get($opt);
+
+        // Récupérer les éléments enfants du noeud "products"
+        $resources = $xml->products->children();
+
+        $products = [];
+        foreach ($resources as $resource) {
+            $id = (string)$resource->attributes()->id;
+
+            // Récupérer les détails pour chaque produit
+            $productDetails = $webservice->get(['resource' => 'products', 'id' => $id])->product;
+
+            $products[] = [
+                'id' => $id,
+                'name' => (string)$productDetails->name->language[0], // Supposant une seule langue
+                'price' => (string)$productDetails->price,
+            ];
         }
 
-        // Enregistrer les modifications
-        $opt['putXml'] = $productXml->asXML();
-        $this->prestashop->edit($opt);
-
-        Log::info("Price updated successfully for product with ID: {$id}");
-
-        // Rediriger vers la vue avec le message de succès
-        return redirect()->route('getProduct', $id)->with('success', 'Le prix a été mis à jour avec succès.');
-    } catch (\Exception $e) {
-        Log::error("Error updating price for product with ID {$id}: {$e->getMessage()}");
-        return redirect()->route('getProduct', $id)->with('error', 'Erreur lors de la mise à jour du prix.');
+        // Retourner une vue avec la liste des produits
+        return view('products.list', ['products' => $products]);
+    } catch (\PrestaShopWebserviceException $e) {
+        // Gestion des erreurs
+        return view('products.list', ['error' => $e->getMessage()]);
     }
 }
 

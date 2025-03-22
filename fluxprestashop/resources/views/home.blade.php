@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Tableau de bord - PrestaView')</title>
+    <title>Tableau de bord - PrestaView</title>
     <!-- Lien vers Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
@@ -28,7 +28,41 @@
 
     <!-- Contenu principal -->
     <div class="container mt-4">
-        @yield('content')
+        <h1 class="text-center">Tableau de bord</h1>
+        <div class="row mt-4">
+            <!-- Carte Produits -->
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Liste des produits</h5>
+                        <p class="card-text">Gérez la liste complète de vos produits.</p>
+                        <a href="#" class="btn btn-primary">Voir les produits</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Carte Clients -->
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Liste des clients</h5>
+                        <p class="card-text">Consultez et gérez les informations clients.</p>
+                        <a href="#" class="btn btn-primary">Voir les clients</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Carte Commandes -->
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Liste des commandes</h5>
+                        <p class="card-text">Suivez les commandes de vos clients.</p>
+                        <a href="#" class="btn btn-primary">Voir les commandes</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Pied de page -->

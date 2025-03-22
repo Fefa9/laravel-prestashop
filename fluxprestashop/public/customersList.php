@@ -34,7 +34,7 @@
 */
 
 // Here we define constants /!\ You need to replace this parameters
-define('DEBUG', true);											// Debug mode
+define('DEBUG', false);											// Debug mode
 define('PS_SHOP_PATH', 'http://localhost:8080/');		// Root path of your PrestaShop store
 define('PS_WS_AUTH_KEY', '8IFRIW5XG2AE4YV64QM67XMFA13F4PAT');	// Auth key (Get it in your Back Office)
 require_once(__DIR__ . '/../vendor/prestashop/prestashop-webservice-lib/PSWebServiceLibrary.php');

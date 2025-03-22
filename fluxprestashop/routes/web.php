@@ -3,10 +3,16 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PrestaShopController;
 
-// Route principale
+// Route  par défaut
+//Route::get('/', function () {
+//    return view('welcome');
+//});
+
+// Route principale 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return view('home');       // Charge la vue home.blade.php
+})->name('home');              // le nom home à la route d'accueil
+
 
 // Route API pour obtenir un produit par ID
 Route::get('/api/products/{id}', [PrestaShopController::class, 'getProduct']);
@@ -34,3 +40,13 @@ Route::get('/test-webservice', function () {
     }
     
 });
+
+// Route pour afficher les clients
+Route::get('/customers', [PrestaShopController::class, 'listCustomers']);
+
+
+Route::get('/customer-details/{id}', [PrestaShopController::class, 'getCustomerDetails']);
+
+
+Route::get('/products', [PrestaShopController::class, 'listProducts'])->name('products.list');
+                                                                      // donne un nom à la route  
