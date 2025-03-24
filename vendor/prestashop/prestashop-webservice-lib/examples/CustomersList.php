@@ -29,8 +29,8 @@
 
 // Here we define constants /!\ You need to replace this parameters
 define('DEBUG', true);											// Debug mode
-define('PS_SHOP_PATH', 'http://www.myshop.com/');		// Root path of your PrestaShop store
-define('PS_WS_AUTH_KEY', 'ZQ88PRJX5VWQHCWE4EE7SQ7HPNX00RAJ');	// Auth key (Get it in your Back Office)
+define('PS_SHOP_PATH', 'http://localhost:8080/');		// Root path of your PrestaShop store
+define('PS_WS_AUTH_KEY', '8IFRIW5XG2AE4YV64QM67XMFA13F4PAT');	// Auth key (Get it in your Back Office)
 require_once('../PSWebServiceLibrary.php');
 
 // Here we make the WebService Call
